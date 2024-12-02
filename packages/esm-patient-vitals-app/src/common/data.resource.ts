@@ -60,12 +60,11 @@ function getInterpretationKey(header: string) {
   return `${header}RenderInterpretation`;
 }
 
-export function useVitalsConceptMetadata() {
+export function useVitalsConceptMetadata(vitalsSignsConceptUUID) {
   const customRepresentation =
     'custom:(setMembers:(uuid,display,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))';
 
-  let tempUUID = '1114AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-  const apiUrl = `${restBaseUrl}/concept/${tempUUID}?v=${customRepresentation}`;
+  const apiUrl = `${restBaseUrl}/concept/${vitalsSignsConceptUUID}?v=${customRepresentation}`;
   //  const apiUrl = `${restBaseUrl}/concept/?q=VITALS SIGNS&v=${customRepresentation}`;
 
   const { data, error, isLoading } = useSWRImmutable<{ data: VitalsConceptMetadataResponse }, Error>(
@@ -120,8 +119,8 @@ const vitalsHooksMutates = new Map<number, KeyedMutator<VitalsFetchResponse[]>>(
  * @returns An SWR-like structure that includes the cleaned-up vitals
  */
 export function useVitalsAndBiometrics(patientUuid: string, mode: VitalsAndBiometricsMode = 'vitals') {
-  const { conceptMetadata } = useVitalsConceptMetadata();
   const { concepts } = useConfig<ConfigObject>();
+  const { conceptMetadata } = useVitalsConceptMetadata(concepts.vitalsSignsUuid);
   const biometricsConcepts = useMemo(
     () => [concepts.heightUuid, concepts.midUpperArmCircumferenceUuid, concepts.weightUuid],
     [concepts.heightUuid, concepts.midUpperArmCircumferenceUuid, concepts.weightUuid],
