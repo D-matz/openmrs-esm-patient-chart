@@ -46,11 +46,6 @@ export interface ConceptMetadata {
   units: string | null;
 }
 
-// interface VitalsConceptMetadataResponse {
-//   results: Array<{
-//     setMembers: Array<ConceptMetadata>;
-//   }>;
-// }
 interface VitalsConceptMetadataResponse {
   setMembers: Array<ConceptMetadata>;
 }
@@ -65,14 +60,12 @@ export function useVitalsConceptMetadata(vitalsSignsConceptUUID) {
     'custom:(setMembers:(uuid,display,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))';
 
   const apiUrl = `${restBaseUrl}/concept/${vitalsSignsConceptUUID}?v=${customRepresentation}`;
-  //  const apiUrl = `${restBaseUrl}/concept/?q=VITALS SIGNS&v=${customRepresentation}`;
 
   const { data, error, isLoading } = useSWRImmutable<{ data: VitalsConceptMetadataResponse }, Error>(
     apiUrl,
     openmrsFetch,
   );
 
-  //  const conceptMetadata = data?.data?.results[0]?.setMembers;
   const conceptMetadata = data?.data?.setMembers;
 
   const conceptUnits = conceptMetadata?.length
