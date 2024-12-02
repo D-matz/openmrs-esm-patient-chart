@@ -46,10 +46,13 @@ export interface ConceptMetadata {
   units: string | null;
 }
 
+// interface VitalsConceptMetadataResponse {
+//   results: Array<{
+//     setMembers: Array<ConceptMetadata>;
+//   }>;
+// }
 interface VitalsConceptMetadataResponse {
-  results: Array<{
-    setMembers: Array<ConceptMetadata>;
-  }>;
+  setMembers: Array<ConceptMetadata>;
 }
 
 function getInterpretationKey(header: string) {
@@ -61,14 +64,17 @@ export function useVitalsConceptMetadata() {
   const customRepresentation =
     'custom:(setMembers:(uuid,display,hiNormal,hiAbsolute,hiCritical,lowNormal,lowAbsolute,lowCritical,units))';
 
-  const apiUrl = `${restBaseUrl}/concept/?q=VITALS SIGNS&v=${customRepresentation}`;
+  let tempUUID = '1114AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+  const apiUrl = `${restBaseUrl}/concept/${tempUUID}?v=${customRepresentation}`;
+  //  const apiUrl = `${restBaseUrl}/concept/?q=VITALS SIGNS&v=${customRepresentation}`;
 
   const { data, error, isLoading } = useSWRImmutable<{ data: VitalsConceptMetadataResponse }, Error>(
     apiUrl,
     openmrsFetch,
   );
 
-  const conceptMetadata = data?.data?.results[0]?.setMembers;
+  //  const conceptMetadata = data?.data?.results[0]?.setMembers;
+  const conceptMetadata = data?.data?.setMembers;
 
   const conceptUnits = conceptMetadata?.length
     ? new Map<string, string>(conceptMetadata.map((concept) => [concept.uuid, concept.units]))
